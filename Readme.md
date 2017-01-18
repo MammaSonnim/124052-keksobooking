@@ -1,7 +1,7 @@
 # Личный проект «Кексобукинг» [![Build status][travis-image]][travis-url] [![Dependency status][dependency-image]][dependency-url]
 
 * Студент: [Яна Крикливая](https://up.htmlacademy.ru/javascript/8/user/124052).
-* Наставник: `Неизвестно`.
+* Наставник: [Сергей Жирков](https://htmlacademy.ru/profile/id297405).
 
 ---
 
