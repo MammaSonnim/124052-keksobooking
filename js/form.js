@@ -10,19 +10,28 @@ var typeSelectElement = noticeFormElement.querySelector('#type');
 var timeInSelectElement = noticeFormElement.querySelector('#time');
 var timeOutSelectElement = noticeFormElement.querySelector('#timeout');
 var roomsSelectElement = noticeFormElement.querySelector('#room_number');
-var capactiySelectElement = noticeFormElement.querySelector('#capacity');
+var capacitySelectElement = noticeFormElement.querySelector('#capacity');
+
+var PIN_CLASS = 'pin';
+var PIN_CLASS_ACTIVE = 'pin--active';
+var DIALOG_CSS_VISIBILITY_FALSE = 'hidden';
+var DIALOG_CSS_VISIBILITY_TRUE = 'visible';
+
+var SINGLE_ROOM_SIZE_ROOMS = '1';
+var SINGLE_ROOM_SIZE_GUESTS = 'null';
+var NOT_SINGLE_ROOM_SIZE_GUESTS = '3';
 
 var objectTypes = [
   {
-    value: 'Квартира',
+    value: 'flat',
     minPrice: 1000
   },
   {
-    value: 'Лачуга',
+    value: 'hovel',
     minPrice: 0
   },
   {
-    value: 'Дворец',
+    value: 'palace',
     minPrice: 10000
   }
 ];
@@ -60,24 +69,24 @@ pinsElements.forEach(function (element) {
 });
 dialogCloseBtnElement.addEventListener('click', closeDialog);
 setLimitsToInputs(inputsDetails);
-syncRoomsAndCapacity();
+syncRoomsWithCapacity();
 syncTimeInAndTimeOut();
 typeSelectElement.addEventListener('change', syncObjectTypeWithMinPrice);
-roomsSelectElement.addEventListener('change', syncRoomsAndCapacity);
+roomsSelectElement.addEventListener('change', syncRoomsWithCapacity);
 
 function openPin(event) {
-  if (event.target.classList.contains('pin')) {
+  if (event.target.classList.contains(PIN_CLASS)) {
     pinsElements.forEach(function (pin) {
-      pin.classList.remove('pin--active');
+      pin.classList.remove(PIN_CLASS_ACTIVE);
     });
-    event.target.classList.add('pin--active');
-    dialogElement.style.visibility = 'visible';
+    event.target.classList.add(PIN_CLASS_ACTIVE);
+    dialogElement.style.visibility = DIALOG_CSS_VISIBILITY_TRUE;
   }
 }
 
 function closeDialog(event) {
-  dialogElement.style.visibility = 'hidden';
-  pinMapElement.querySelector('.pin--active').classList.remove('pin--active');
+  dialogElement.style.visibility = DIALOG_CSS_VISIBILITY_FALSE;
+  pinMapElement.querySelector(PIN_CLASS_ACTIVE).classList.remove(PIN_CLASS_ACTIVE);
 }
 
 function setLimitsToInputs(inputs) {
@@ -124,8 +133,9 @@ function syncTimeInAndTimeOut() {
   });
 }
 
-function syncRoomsAndCapacity() {
-  capactiySelectElement.selectedIndex = roomsSelectElement.selectedIndex === 0 ? 1 : 0;
+function syncRoomsWithCapacity() {
+  capacitySelectElement.value = roomsSelectElement.value === SINGLE_ROOM_SIZE_ROOMS ?
+    SINGLE_ROOM_SIZE_GUESTS : NOT_SINGLE_ROOM_SIZE_GUESTS;
 }
 
 function getSelectedOption(select) {
