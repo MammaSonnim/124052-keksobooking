@@ -1,3 +1,5 @@
+'use strict';
+
 var pinMapElement = document.querySelector('.tokyo__pin-map');
 var pinsElements = pinMapElement.querySelectorAll('.pin');
 var dialogElement = document.querySelector('.dialog');
@@ -53,7 +55,7 @@ var inputsDetails = [
 
 // init
 pinMapElement.addEventListener('click', openPin);
-pinsElements.forEach(function(element) {
+pinsElements.forEach(function (element) {
   element.querySelector('img').style.pointerEvents = 'none';
 });
 dialogCloseBtnElement.addEventListener('click', closeDialog);
@@ -65,7 +67,7 @@ roomsSelectElement.addEventListener('change', syncRoomsAndCapacity);
 
 function openPin(event) {
   if (event.target.classList.contains('pin')) {
-    pinsElements.forEach(function(pin) {
+    pinsElements.forEach(function (pin) {
       pin.classList.remove('pin--active');
     });
     event.target.classList.add('pin--active');
@@ -79,23 +81,27 @@ function closeDialog(event) {
 }
 
 function setLimitsToInputs(inputs) {
-  inputs.forEach(function(input) {
+  inputs.forEach(function (input) {
     for (var rule in input.rules) {
-      if (!input.rules.hasOwnProperty(rule)) continue;
-      input.selector[rule] = input.rules[rule]
+      if (!input.rules.hasOwnProperty(rule)) {
+        continue;
+      }
+      input.selector[rule] = input.rules[rule];
     }
   });
 }
 
-// TODO add to destroy method
-function removeLimitsFromInputs(inputs) {
-  inputs.forEach(function(input) {
-    for (var rule in input.rules) {
-      if (!input.rules.hasOwnProperty(rule)) continue;
-      input.selector[rule] = !input.rules[rule]
-    }
-  });
-}
+// // TODO add to destroy method
+// function removeLimitsFromInputs(inputs) {
+//   inputs.forEach(function (input) {
+//     for (var rule in input.rules) {
+//       if (!input.rules.hasOwnProperty(rule)) {
+//        continue;
+//       }
+//       input.selector[rule] = !input.rules[rule];
+//     }
+//   });
+// }
 
 function syncObjectTypeWithMinPrice() {
   var optionSelected = getSelectedOption(typeSelectElement);
@@ -109,11 +115,11 @@ function syncObjectTypeWithMinPrice() {
 }
 
 function syncTimeInAndTimeOut() {
-  timeInSelectElement.addEventListener('change', function() {
+  timeInSelectElement.addEventListener('change', function () {
     timeOutSelectElement.selectedIndex = timeInSelectElement.selectedIndex;
   });
 
-  timeOutSelectElement.addEventListener('change', function() {
+  timeOutSelectElement.addEventListener('change', function () {
     timeInSelectElement.selectedIndex = timeOutSelectElement.selectedIndex;
   });
 }
