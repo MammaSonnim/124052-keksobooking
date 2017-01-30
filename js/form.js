@@ -84,9 +84,9 @@ function openPin(event) {
   }
 }
 
-function closeDialog(event) {
+function closeDialog() {
   dialogElement.style.visibility = DIALOG_CSS_VISIBILITY_FALSE;
-  pinMapElement.querySelector(PIN_CLASS_ACTIVE).classList.remove(PIN_CLASS_ACTIVE);
+  pinMapElement.querySelector('.' + PIN_CLASS_ACTIVE).classList.remove(PIN_CLASS_ACTIVE);
 }
 
 function setLimitsToInputs(inputs) {
