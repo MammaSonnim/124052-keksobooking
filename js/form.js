@@ -1,7 +1,6 @@
 'use strict';
 
 var pinMapElement = document.querySelector('.tokyo__pin-map');
-var pinsElements = pinMapElement.querySelectorAll('.pin');
 var dialogElement = document.querySelector('.dialog');
 var dialogCloseBtnElement = dialogElement.querySelector('.dialog__close');
 var noticeFormElement = document.querySelector('.notice__form');
@@ -21,7 +20,7 @@ var SINGLE_ROOM_SIZE_ROOMS = '1';
 var SINGLE_ROOM_SIZE_GUESTS = 'null';
 var NOT_SINGLE_ROOM_SIZE_GUESTS = '3';
 
-var objectTypes = [
+var habitationTypes = [
   {
     value: 'flat',
     minPrice: 1000
@@ -36,18 +35,18 @@ var objectTypes = [
   }
 ];
 
-var inputsDetails = [
+var inputDetails = [
   {
-    selector: noticeFormElement.querySelector('#title'),
-    rules: {
+    element: noticeFormElement.querySelector('#title'),
+    attributes: {
       required: true,
       minLength: 30,
       maxLength: 100
     }
   },
   {
-    selector: noticeFormElement.querySelector('#price'),
-    rules: {
+    element: noticeFormElement.querySelector('#price'),
+    attributes: {
       required: true,
       type: 'number',
       min: 1000,
@@ -55,87 +54,39 @@ var inputsDetails = [
     }
   },
   {
-    selector: noticeFormElement.querySelector('#address'),
-    rules: {
+    element: noticeFormElement.querySelector('#address'),
+    attributes: {
       required: true
     }
   }
 ];
 
-// init
-pinMapElement.addEventListener('click', openPin);
-pinsElements.forEach(function (element) {
-  element.querySelector('img').style.pointerEvents = 'none';
-});
-dialogCloseBtnElement.addEventListener('click', closeDialog);
-setLimitsToInputs(inputsDetails);
-syncRoomsWithCapacity();
-syncTimeInAndTimeOut();
-typeSelectElement.addEventListener('change', syncObjectTypeWithMinPrice);
-roomsSelectElement.addEventListener('change', syncRoomsWithCapacity);
+initPage();
 
-function openPin(event) {
-  if (event.target.classList.contains(PIN_CLASS)) {
-    pinsElements.forEach(function (pin) {
-      pin.classList.remove(PIN_CLASS_ACTIVE);
-    });
-    event.target.classList.add(PIN_CLASS_ACTIVE);
-    dialogElement.style.visibility = DIALOG_CSS_VISIBILITY_TRUE;
-  }
+function initPage() {
+  setInputAttributes(inputDetails);
+  syncRoomsWithCapacity();
+  addListenersToPageElements();
 }
 
-function closeDialog() {
-  dialogElement.style.visibility = DIALOG_CSS_VISIBILITY_FALSE;
-  pinMapElement.querySelector('.' + PIN_CLASS_ACTIVE).classList.remove(PIN_CLASS_ACTIVE);
+function addListenersToPageElements() {
+  pinMapElement.addEventListener('click', openPin);
+  dialogCloseBtnElement.addEventListener('click', closeDialog);
+  typeSelectElement.addEventListener('change', syncHabitationTypeWithMinPrice);
+  roomsSelectElement.addEventListener('change', syncRoomsWithCapacity);
+  timeInSelectElement.addEventListener('change', syncTimeInToTimeOut);
+  timeOutSelectElement.addEventListener('change', syncTimeOutToTimeIn);
 }
 
-function setLimitsToInputs(inputs) {
+function setInputAttributes(inputs) {
   inputs.forEach(function (input) {
-    for (var rule in input.rules) {
-      if (!input.rules.hasOwnProperty(rule)) {
+    for (var attribute in input.attributes) {
+      if (!input.attributes.hasOwnProperty(attribute)) {
         continue;
       }
-      input.selector[rule] = input.rules[rule];
+      input.element[attribute] = input.attributes[attribute];
     }
   });
-}
-
-// // TODO add to destroy method
-// function removeLimitsFromInputs(inputs) {
-//   inputs.forEach(function (input) {
-//     for (var rule in input.rules) {
-//       if (!input.rules.hasOwnProperty(rule)) {
-//        continue;
-//       }
-//       input.selector[rule] = !input.rules[rule];
-//     }
-//   });
-// }
-
-function syncObjectTypeWithMinPrice() {
-  var optionSelected = getSelectedOption(typeSelectElement);
-
-  for (var n = 0; n < objectTypes.length; n++) {
-    if (optionSelected.value === objectTypes[n].value) {
-      priceInputElement.min = objectTypes[n].minPrice;
-      break;
-    }
-  }
-}
-
-function syncTimeInAndTimeOut() {
-  timeInSelectElement.addEventListener('change', function () {
-    timeOutSelectElement.selectedIndex = timeInSelectElement.selectedIndex;
-  });
-
-  timeOutSelectElement.addEventListener('change', function () {
-    timeInSelectElement.selectedIndex = timeOutSelectElement.selectedIndex;
-  });
-}
-
-function syncRoomsWithCapacity() {
-  capacitySelectElement.value = roomsSelectElement.value === SINGLE_ROOM_SIZE_ROOMS ?
-    SINGLE_ROOM_SIZE_GUESTS : NOT_SINGLE_ROOM_SIZE_GUESTS;
 }
 
 function getSelectedOption(select) {
@@ -147,4 +98,46 @@ function getSelectedOption(select) {
   }
 
   return optionSelected;
+}
+
+// handlers
+function openPin(event) {
+  if (event.target.classList.contains(PIN_CLASS)) {
+    var pinActive = pinMapElement.querySelector('.' + PIN_CLASS_ACTIVE);
+
+    if (pinActive) {
+      pinActive.classList.remove(PIN_CLASS_ACTIVE);
+    }
+    event.target.classList.add(PIN_CLASS_ACTIVE);
+    dialogElement.style.visibility = DIALOG_CSS_VISIBILITY_TRUE;
+  }
+}
+
+function closeDialog(event) {
+  dialogElement.style.visibility = DIALOG_CSS_VISIBILITY_FALSE;
+  pinMapElement.querySelector('.' + PIN_CLASS_ACTIVE).classList.remove(PIN_CLASS_ACTIVE);
+}
+
+function syncHabitationTypeWithMinPrice(event) {
+  var optionSelected = getSelectedOption(typeSelectElement);
+
+  for (var n = 0; n < habitationTypes.length; n++) {
+    if (optionSelected.value === habitationTypes[n].value) {
+      priceInputElement.min = habitationTypes[n].minPrice;
+      break;
+    }
+  }
+}
+
+function syncTimeInToTimeOut(event) {
+  timeOutSelectElement.selectedIndex = timeInSelectElement.selectedIndex;
+}
+
+function syncTimeOutToTimeIn(event) {
+  timeInSelectElement.selectedIndex = timeOutSelectElement.selectedIndex;
+}
+
+function syncRoomsWithCapacity(event) {
+  capacitySelectElement.value = roomsSelectElement.value === SINGLE_ROOM_SIZE_ROOMS ?
+    SINGLE_ROOM_SIZE_GUESTS : NOT_SINGLE_ROOM_SIZE_GUESTS;
 }
