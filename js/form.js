@@ -5,7 +5,7 @@ var dialogElement = document.querySelector('.dialog');
 var dialogCloseBtnElement = dialogElement.querySelector('.dialog__close');
 var noticeFormElement = document.querySelector('.notice__form');
 var priceInputElement = noticeFormElement.querySelector('#price');
-var typeSelectElement = noticeFormElement.querySelector('#type');
+var habitationSelectElement = noticeFormElement.querySelector('#type');
 var timeInSelectElement = noticeFormElement.querySelector('#time');
 var timeOutSelectElement = noticeFormElement.querySelector('#timeout');
 var roomsSelectElement = noticeFormElement.querySelector('#room_number');
@@ -70,14 +70,40 @@ function initPage() {
 }
 
 function addListenersToPageElements() {
-  pinMapElement.addEventListener('click', openPin);
-  dialogCloseBtnElement.addEventListener('click', closeDialog);
-  typeSelectElement.addEventListener('change', syncHabitationTypeWithMinPrice);
-  roomsSelectElement.addEventListener('change', syncRoomsWithCapacity);
-  timeInSelectElement.addEventListener('change', syncTimeInToTimeOut);
-  timeOutSelectElement.addEventListener('change', syncTimeOutToTimeIn);
+  pinMapElement.addEventListener('click', pinClickHandler);
+  dialogCloseBtnElement.addEventListener('click', dialogCloseBtnClickHandler);
+  habitationSelectElement.addEventListener('change', habitationChangeHandler);
+  roomsSelectElement.addEventListener('change', roomsChangeHandler);
+  timeInSelectElement.addEventListener('change', timeInChangeHandler);
+  timeOutSelectElement.addEventListener('change', timeOutChangeHandler);
 }
 
+// handlers
+function pinClickHandler(event) {
+  openPin(event);
+}
+
+function dialogCloseBtnClickHandler(event) {
+  closeDialog()
+}
+
+function habitationChangeHandler(event) {
+  syncHabitationTypeWithMinPrice()
+}
+
+function roomsChangeHandler(event) {
+  syncRoomsWithCapacity()
+}
+
+function timeInChangeHandler(event) {
+  syncTimeInToTimeOut()
+}
+
+function timeOutChangeHandler(event) {
+  syncTimeOutToTimeIn()
+}
+
+// business logic
 function setInputAttributes(inputs) {
   inputs.forEach(function (input) {
     for (var attribute in input.attributes) {
@@ -100,7 +126,6 @@ function getSelectedOption(select) {
   return optionSelected;
 }
 
-// handlers
 function openPin(event) {
   if (event.target.classList.contains(PIN_CLASS)) {
     var pinActive = pinMapElement.querySelector('.' + PIN_CLASS_ACTIVE);
@@ -113,13 +138,13 @@ function openPin(event) {
   }
 }
 
-function closeDialog(event) {
+function closeDialog() {
   dialogElement.style.visibility = DIALOG_CSS_VISIBILITY_FALSE;
   pinMapElement.querySelector('.' + PIN_CLASS_ACTIVE).classList.remove(PIN_CLASS_ACTIVE);
 }
 
-function syncHabitationTypeWithMinPrice(event) {
-  var optionSelected = getSelectedOption(typeSelectElement);
+function syncHabitationTypeWithMinPrice() {
+  var optionSelected = getSelectedOption(habitationSelectElement);
 
   for (var n = 0; n < habitationTypes.length; n++) {
     if (optionSelected.value === habitationTypes[n].value) {
@@ -129,15 +154,15 @@ function syncHabitationTypeWithMinPrice(event) {
   }
 }
 
-function syncTimeInToTimeOut(event) {
+function syncTimeInToTimeOut() {
   timeOutSelectElement.selectedIndex = timeInSelectElement.selectedIndex;
 }
 
-function syncTimeOutToTimeIn(event) {
+function syncTimeOutToTimeIn() {
   timeInSelectElement.selectedIndex = timeOutSelectElement.selectedIndex;
 }
 
-function syncRoomsWithCapacity(event) {
+function syncRoomsWithCapacity() {
   capacitySelectElement.value = roomsSelectElement.value === SINGLE_ROOM_SIZE_ROOMS ?
     SINGLE_ROOM_SIZE_GUESTS : NOT_SINGLE_ROOM_SIZE_GUESTS;
 }
