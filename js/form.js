@@ -84,23 +84,23 @@ function pinClickHandler(event) {
 }
 
 function dialogCloseBtnClickHandler(event) {
-  closeDialog()
+  closeDialog();
 }
 
 function habitationChangeHandler(event) {
-  syncHabitationTypeWithMinPrice()
+  syncHabitationTypeWithMinPrice();
 }
 
 function roomsChangeHandler(event) {
-  syncRoomsWithCapacity()
+  syncRoomsWithCapacity();
 }
 
 function timeInChangeHandler(event) {
-  syncTimeInToTimeOut()
+  syncTimeInToTimeOut();
 }
 
 function timeOutChangeHandler(event) {
-  syncTimeOutToTimeIn()
+  syncTimeOutToTimeIn();
 }
 
 // business logic
@@ -113,17 +113,6 @@ function setInputAttributes(inputs) {
       input.element[attribute] = input.attributes[attribute];
     }
   });
-}
-
-function getSelectedOption(select) {
-  for (var i = 0; i < select.options.length; i++) {
-    if (select.options[i].selected) {
-      var optionSelected = select.options[i];
-      break;
-    }
-  }
-
-  return optionSelected;
 }
 
 function openPin(event) {
@@ -144,10 +133,10 @@ function closeDialog() {
 }
 
 function syncHabitationTypeWithMinPrice() {
-  var optionSelected = getSelectedOption(habitationSelectElement);
+  var optionSelected = habitationSelectElement.value;
 
   for (var n = 0; n < habitationTypes.length; n++) {
-    if (optionSelected.value === habitationTypes[n].value) {
+    if (optionSelected === habitationTypes[n].value) {
       priceInputElement.min = habitationTypes[n].minPrice;
       break;
     }
