@@ -66,15 +66,15 @@
         </fieldset>
       </form>
     </div>
-    <div class="tokyo__pin-map">
-      <div class="pin  pin__main"><img src="img/main-pin-image.png" alt="Main Pin" class="rounded" width="40" height="44"></div>
-      <div class="pin  pin--active" style="left: 700px;top: 350px"><img src="img/avatars/avatar.png" alt="User Avatar" class="rounded" width="40" height="40"></div>
-      <div class="pin" style="left: 400px;top: 400px"><img src="img/avatars/simpson.png" alt="User Avatar" class="rounded" width="40" height="40"></div>
-      <div class="pin"><img src="img/avatars/default.png" alt="User Avatar" class="rounded" width="40" height="40"></div>
+    <div class="tokyo__pin-map" role="radiogroup">
+      <div class="pin  pin__main" role="radio" aria-checked="false" tabindex="0"><img src="img/main-pin-image.png" alt="Main Pin" class="rounded" width="40" height="44"></div>
+      <div class="pin" style="left: 700px;top: 350px" role="radio" aria-checked="true" tabindex="0"><img src="img/avatars/avatar.png" alt="User Avatar" class="rounded" width="40" height="40"></div>
+      <div class="pin" style="left: 400px;top: 400px" role="radio" aria-checked="false" tabindex="0"><img src="img/avatars/simpson.png" alt="User Avatar" class="rounded" width="40" height="40"></div>
+      <div class="pin" role="radio" aria-checked="false" tabindex="0"><img src="img/avatars/default.png" alt="User Avatar" class="rounded" width="40" height="40"></div>
     </div>
-    <div class="dialog">
+    <div class="dialog" role="dialog">
       <div class="dialog__title"><img src="img/avatars/avatar.png" alt="Avatar" width="70" height="70">
-        <a href="#" class="dialog__close"><img src="img/close.svg" alt="close" width="22" height="22"></a>
+        <a href="#" class="dialog__close" role="button" aria-pressed="false" tabindex="0"><img src="img/close.svg" alt="close" width="22" height="22"></a>
       </div>
       <div class="dialog__panel">
         <h3 class="lodge__title">Уютное гнездышко для молодоженов</h3>
@@ -150,7 +150,7 @@
               <label for="capacity">Количество мест</label>
               <select id="capacity">
                 <option selected value="3">для 3 гостей</option>
-                <option value="null">не для гостей</option>
+                <option value="0">не для гостей</option>
               </select>
             </div>
           </div>
