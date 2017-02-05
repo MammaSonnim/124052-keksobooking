@@ -1,3 +1,7 @@
 .pin img {
   pointer-events: none;
 }
+
+.dialog {
+  visibility: hidden;
+}
