@@ -1,61 +1,43 @@
 'use strict';
 
-var pinMapElement = document.querySelector('.tokyo__pin-map');
-var dialogElement = document.querySelector('.dialog');
-var dialogCloseBtnElement = dialogElement.querySelector('.dialog__close');
+/** @type {HTMLElement} */
 var noticeFormElement = document.querySelector('.notice__form');
-var priceInputElement = noticeFormElement.querySelector('#price');
+
+/** @type {HTMLElement} */
 var habitationSelectElement = noticeFormElement.querySelector('#type');
+
+/** @type {HTMLElement} */
+var priceInputElement = noticeFormElement.querySelector('#price');
+
+/** @type {HTMLElement} */
 var timeInSelectElement = noticeFormElement.querySelector('#time');
+
+/** @type {HTMLElement} */
 var timeOutSelectElement = noticeFormElement.querySelector('#timeout');
+
+/** @type {HTMLElement} */
 var roomsSelectElement = noticeFormElement.querySelector('#room_number');
+
+/** @type {HTMLElement} */
 var capacitySelectElement = noticeFormElement.querySelector('#capacity');
 
-/** @const {string} */
-var PIN_CLASS = 'pin';
+/** @const {Array.<number>} */
+var TIME_IN_ARRAY = [12, 13, 14];
 
-/** @const {string} */
-var PIN_CLASS_ACTIVE = 'pin--active';
+/** @const {Array.<number>} */
+var TIME_OUT_ARRAY = [12, 13, 14];
 
-/** @const {string} */
-var DIALOG_CSS_VISIBILITY_FALSE = 'hidden';
+/** @const {Array.<string>} */
+var HABITATION_TYPES = ['flat', 'hovel', 'palace'];
 
-/** @const {string} */
-var DIALOG_CSS_VISIBILITY_TRUE = 'visible';
+/** @const {Array.<number>} */
+var HABITATION_MIN_PRICE = [1000, 0, 10000];
 
-/** @const {number} */
-var SINGLE_ROOM_SIZE_ROOMS = 1;
+/** @const {Array.<number>} */
+var ROOMS_QUANTITY = [1, 2, 100];
 
-/** @const {number} */
-var SINGLE_ROOM_SIZE_GUESTS = 0;
-
-/** @const {number} */
-var NOT_SINGLE_ROOM_SIZE_GUESTS = 3;
-
-/** @const {string} */
-var ARIA_CHECKED_ATTRIBUTE = 'aria-checked';
-
-/** @const {number} */
-var ENTER_KEY_CODE = 13;
-
-/** @const {number} */
-var ESCAPE_KEY_CODE = 27;
-
-/** @type {Array.<Object>} */
-var habitationTypes = [
-  {
-    value: 'flat',
-    minPrice: 1000
-  },
-  {
-    value: 'hovel',
-    minPrice: 0
-  },
-  {
-    value: 'palace',
-    minPrice: 10000
-  }
-];
+/** @const {Array.<number>} */
+var GUESTS_QUANTITY = [0, 3, 3];
 
 /** @type {Array.<Object>} */
 var inputDetails = [
@@ -89,55 +71,32 @@ initPage();
 /** навешивание аттрибутов при открытии страницы */
 function initPage() {
   setInputAttributes(inputDetails);
-  syncRoomsWithCapacity();
+  window.synchronizeFields(roomsSelectElement, capacitySelectElement, ROOMS_QUANTITY, GUESTS_QUANTITY, 'value');
+  window.initializePins();
   addListenersToPageElements();
 }
 
 function addListenersToPageElements() {
-  pinMapElement.addEventListener('click', pinClickHandler);
-  pinMapElement.addEventListener('keydown', pinKeydownHandler);
-  dialogCloseBtnElement.addEventListener('click', dialogCloseBtnClickHandler);
   habitationSelectElement.addEventListener('change', habitationChangeHandler);
   roomsSelectElement.addEventListener('change', roomsChangeHandler);
   timeInSelectElement.addEventListener('change', timeInChangeHandler);
   timeOutSelectElement.addEventListener('change', timeOutChangeHandler);
 }
 
-// handlers
-function pinClickHandler(event) {
-  selectPin(event.target);
-}
-
-function pinKeydownHandler(event) {
-  if (event.keyCode === ENTER_KEY_CODE) {
-    selectPin(event.target);
-  }
-}
-
-function dialogCloseBtnClickHandler(event) {
-  closeDialog();
-}
-
-function dialogCloseBtnKeydownHandler(event) {
-  if (event.keyCode === ESCAPE_KEY_CODE) {
-    closeDialog();
-  }
-}
-
 function habitationChangeHandler(event) {
-  syncHabitationTypeWithMinPrice();
+  window.synchronizeFields(habitationSelectElement, priceInputElement, HABITATION_TYPES, HABITATION_MIN_PRICE, 'min');
 }
 
 function roomsChangeHandler(event) {
-  syncRoomsWithCapacity();
+  window.synchronizeFields(roomsSelectElement, capacitySelectElement, ROOMS_QUANTITY, GUESTS_QUANTITY, 'value');
 }
 
 function timeInChangeHandler(event) {
-  syncTimeInToTimeOut();
+  window.synchronizeFields(timeInSelectElement, timeOutSelectElement, TIME_IN_ARRAY, TIME_OUT_ARRAY, 'value');
 }
 
 function timeOutChangeHandler(event) {
-  syncTimeOutToTimeIn();
+  window.synchronizeFields(timeOutSelectElement, timeInSelectElement, TIME_OUT_ARRAY, TIME_IN_ARRAY, 'value');
 }
 
 /**
@@ -154,58 +113,4 @@ function setInputAttributes(inputInfo) {
       input.element[attribute] = input.attributes[attribute];
     }
   });
-}
-
-/**
- * Поведение при выборе пина — его активация и открытие диалога
- * @param {HTMLElement} element
- */
-function selectPin(element) {
-  if (element.classList.contains(PIN_CLASS)) {
-    var pinActive = pinMapElement.querySelector('.' + PIN_CLASS_ACTIVE);
-
-    if (pinActive) {
-      pinActive.classList.remove(PIN_CLASS_ACTIVE);
-      pinActive.setAttribute(ARIA_CHECKED_ATTRIBUTE, 'false');
-    }
-    element.classList.add(PIN_CLASS_ACTIVE);
-    element.setAttribute(ARIA_CHECKED_ATTRIBUTE, 'false');
-    dialogElement.style.visibility = DIALOG_CSS_VISIBILITY_TRUE;
-    document.addEventListener('keydown', dialogCloseBtnKeydownHandler);
-  }
-}
-
-/** Поведение при закрытии диалога — скрытие модального окна и деактивация пина */
-function closeDialog() {
-  dialogElement.style.visibility = DIALOG_CSS_VISIBILITY_FALSE;
-  document.removeEventListener('keydown', dialogCloseBtnKeydownHandler);
-  pinMapElement.querySelector('.' + PIN_CLASS_ACTIVE).classList.remove(PIN_CLASS_ACTIVE);
-}
-
-/** Сеттинг минимальной цены при выборе типа жилья */
-function syncHabitationTypeWithMinPrice() {
-  var optionSelected = habitationSelectElement.value;
-
-  for (var n = 0; n < habitationTypes.length; n++) {
-    if (optionSelected === habitationTypes[n].value) {
-      priceInputElement.min = habitationTypes[n].minPrice;
-      break;
-    }
-  }
-}
-
-/** Сеттинг времени заезда при выборе времени выезда */
-function syncTimeInToTimeOut() {
-  timeOutSelectElement.selectedIndex = timeInSelectElement.selectedIndex;
-}
-
-/** Сеттинг времени выезда при выборе времени заезда */
-function syncTimeOutToTimeIn() {
-  timeInSelectElement.selectedIndex = timeOutSelectElement.selectedIndex;
-}
-
-/** Сеттинг количества гостей при выборе количества комнат */
-function syncRoomsWithCapacity() {
-  capacitySelectElement.value = +roomsSelectElement.value === SINGLE_ROOM_SIZE_ROOMS ?
-    SINGLE_ROOM_SIZE_GUESTS : NOT_SINGLE_ROOM_SIZE_GUESTS;
 }
