@@ -21,23 +21,23 @@ var roomsSelectElement = noticeFormElement.querySelector('#room_number');
 /** @type {HTMLElement} */
 var capacitySelectElement = noticeFormElement.querySelector('#capacity');
 
-/** @const {Array.<number>} */
-var TIME_IN_ARRAY = [12, 13, 14];
+/** @const {Array.<string>} */
+var TIME_IN_ARRAY = ['12', '13', '14'];
 
-/** @const {Array.<number>} */
-var TIME_OUT_ARRAY = [12, 13, 14];
+/** @const {Array.<string>} */
+var TIME_OUT_ARRAY = ['12', '13', '14'];
 
 /** @const {Array.<string>} */
 var HABITATION_TYPES = ['flat', 'hovel', 'palace'];
 
-/** @const {Array.<number>} */
-var HABITATION_MIN_PRICE = [1000, 0, 10000];
+/** @const {Array.<string>} */
+var HABITATION_MIN_PRICE = ['1000', '0', '10000'];
 
-/** @const {Array.<number>} */
-var ROOMS_QUANTITY = [1, 2, 100];
+/** @const {Array.<string>} */
+var ROOMS_QUANTITY = ['1', '2', '100'];
 
-/** @const {Array.<number>} */
-var GUESTS_QUANTITY = [0, 3, 3];
+/** @const {Array.<string>} */
+var GUESTS_QUANTITY = ['0', '3', '3'];
 
 /** @type {Array.<Object>} */
 var inputDetails = [
