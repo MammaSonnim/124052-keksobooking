@@ -16,15 +16,6 @@ window.initializePins = function () {
   /** @const {string} */
   var PIN_CLASS_ACTIVE = 'pin--active';
 
-  /** @const {string} */
-  var DIALOG_CSS_VISIBILITY_FALSE = 'hidden';
-
-  /** @const {string} */
-  var DIALOG_CSS_VISIBILITY_TRUE = 'visible';
-
-  /** @const {string} */
-  var ARIA_CHECKED_ATTRIBUTE = 'aria-checked';
-
   /** @const {number} */
   var ENTER_KEY_CODE = 13;
 
@@ -32,24 +23,28 @@ window.initializePins = function () {
   var ESCAPE_KEY_CODE = 27;
 
   pinMapElement.addEventListener('click', pinClickHandler);
-  pinMapElement.addEventListener('keydown', pinKeydownEnterHandler);
+  pinMapElement.addEventListener('keydown', pinKeydownHandler);
   dialogCloseBtnElement.addEventListener('click', dialogCloseBtnClickHandler);
 
+  /** @param {MouseEvent} event */
   function pinClickHandler(event) {
     selectPin(event.target);
   }
 
-  function pinKeydownEnterHandler(event) {
+  /** @param {KeyboardEvent} event */
+  function pinKeydownHandler(event) {
     if (event.keyCode === ENTER_KEY_CODE) {
       selectPin(event.target);
     }
   }
 
+  /** @param {MouseEvent} event */
   function dialogCloseBtnClickHandler(event) {
     closeDialog();
   }
 
-  function dialogCloseBtnKeydownEscHandler(event) {
+  /** @param {KeyboardEvent} event */
+  function dialogCloseBtnKeydownHandler(event) {
     if (event.keyCode === ESCAPE_KEY_CODE) {
       closeDialog();
     }
@@ -65,19 +60,19 @@ window.initializePins = function () {
 
       if (pinActive) {
         pinActive.classList.remove(PIN_CLASS_ACTIVE);
-        pinActive.setAttribute(window.ARIA_CHECKED_ATTRIBUTE, 'false');
+        pinActive.setAttribute('aria-checked', 'false');
       }
       element.classList.add(PIN_CLASS_ACTIVE);
-      element.setAttribute(ARIA_CHECKED_ATTRIBUTE, 'false');
-      dialogElement.style.visibility = DIALOG_CSS_VISIBILITY_TRUE;
-      document.addEventListener('keydown', dialogCloseBtnKeydownEscHandler);
+      element.setAttribute('aria-checked', 'false');
+      dialogElement.style.visibility = 'visible';
+      document.addEventListener('keydown', dialogCloseBtnKeydownHandler);
     }
   }
 
   /** Поведение при закрытии диалога — скрытие модального окна и деактивация пина */
   function closeDialog() {
-    dialogElement.style.visibility = DIALOG_CSS_VISIBILITY_FALSE;
-    document.removeEventListener('keydown', dialogCloseBtnKeydownEscHandler);
+    dialogElement.style.visibility = 'hidden';
+    document.removeEventListener('keydown', dialogCloseBtnKeydownHandler);
     pinMapElement.querySelector('.' + PIN_CLASS_ACTIVE).classList.remove(PIN_CLASS_ACTIVE);
   }
 };

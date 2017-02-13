@@ -68,7 +68,7 @@ var inputDetails = [
 
 initPage();
 
-/** навешивание аттрибутов при открытии страницы */
+/** навешивание аттрибутов и слушателей при открытии страницы */
 function initPage() {
   setInputAttributes(inputDetails);
   window.synchronizeFields(roomsSelectElement, capacitySelectElement, ROOMS_QUANTITY, GUESTS_QUANTITY, 'value');
@@ -83,18 +83,22 @@ function addListenersToPageElements() {
   timeOutSelectElement.addEventListener('change', timeOutChangeHandler);
 }
 
+/** @param {Event} event*/
 function habitationChangeHandler(event) {
   window.synchronizeFields(habitationSelectElement, priceInputElement, HABITATION_TYPES, HABITATION_MIN_PRICE, 'min');
 }
 
+/** @param {Event} event*/
 function roomsChangeHandler(event) {
   window.synchronizeFields(roomsSelectElement, capacitySelectElement, ROOMS_QUANTITY, GUESTS_QUANTITY, 'value');
 }
 
+/** @param {Event} event*/
 function timeInChangeHandler(event) {
   window.synchronizeFields(timeInSelectElement, timeOutSelectElement, TIME_IN_ARRAY, TIME_OUT_ARRAY, 'value');
 }
 
+/** @param {Event} event*/
 function timeOutChangeHandler(event) {
   window.synchronizeFields(timeOutSelectElement, timeInSelectElement, TIME_OUT_ARRAY, TIME_IN_ARRAY, 'value');
 }
