@@ -72,7 +72,6 @@ initPage();
 function initPage() {
   setInputAttributes(inputDetails);
   window.synchronizeFields(roomsSelectElement, capacitySelectElement, ROOMS_QUANTITY, GUESTS_QUANTITY, 'value');
-  window.initializePins();
   addListenersToPageElements();
 }
 
