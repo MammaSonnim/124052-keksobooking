@@ -1,6 +1,6 @@
 'use strict';
 
-window.initializePins = function () {
+(function () {
   /** @type {HTMLElement} */
   var pinMapElement = document.querySelector('.tokyo__pin-map');
 
@@ -75,4 +75,4 @@ window.initializePins = function () {
     document.removeEventListener('keydown', dialogCloseBtnKeydownHandler);
     pinMapElement.querySelector('.' + PIN_CLASS_ACTIVE).classList.remove(PIN_CLASS_ACTIVE);
   }
-};
+})();
