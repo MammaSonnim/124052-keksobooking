@@ -71,7 +71,9 @@ initPage();
 /** навешивание аттрибутов и слушателей при открытии страницы */
 function initPage() {
   setInputAttributes(inputDetails);
-  window.synchronizeFields(roomsSelectElement, capacitySelectElement, ROOMS_QUANTITY, GUESTS_QUANTITY, 'value');
+  window.synchronizeFields(roomsSelectElement, capacitySelectElement, ROOMS_QUANTITY, GUESTS_QUANTITY, function (element, value) {
+    element.value = value;
+  });
   addListenersToPageElements();
 }
 
@@ -84,22 +86,30 @@ function addListenersToPageElements() {
 
 /** @param {Event} event*/
 function habitationChangeHandler(event) {
-  window.synchronizeFields(habitationSelectElement, priceInputElement, HABITATION_TYPES, HABITATION_MIN_PRICE, 'min');
+  window.synchronizeFields(habitationSelectElement, priceInputElement, HABITATION_TYPES, HABITATION_MIN_PRICE, function (element, value) {
+    element.min = value;
+  });
 }
 
 /** @param {Event} event*/
 function roomsChangeHandler(event) {
-  window.synchronizeFields(roomsSelectElement, capacitySelectElement, ROOMS_QUANTITY, GUESTS_QUANTITY, 'value');
+  window.synchronizeFields(roomsSelectElement, capacitySelectElement, ROOMS_QUANTITY, GUESTS_QUANTITY, function (element, value) {
+    element.value = value;
+  });
 }
 
 /** @param {Event} event*/
 function timeInChangeHandler(event) {
-  window.synchronizeFields(timeInSelectElement, timeOutSelectElement, TIME_IN_ARRAY, TIME_OUT_ARRAY, 'value');
+  window.synchronizeFields(timeInSelectElement, timeOutSelectElement, TIME_IN_ARRAY, TIME_OUT_ARRAY, function (element, value) {
+    element.value = value;
+  });
 }
 
 /** @param {Event} event*/
 function timeOutChangeHandler(event) {
-  window.synchronizeFields(timeOutSelectElement, timeInSelectElement, TIME_OUT_ARRAY, TIME_IN_ARRAY, 'value');
+  window.synchronizeFields(timeOutSelectElement, timeInSelectElement, TIME_OUT_ARRAY, TIME_IN_ARRAY, function (element, value) {
+    element.value = value;
+  });
 }
 
 /**

@@ -6,12 +6,14 @@ window.synchronizeFields = (function () {
    * @param {HTMLElement} secondField
    * @param {Array<string>} valuesOfFirstField
    * @param {Array<string>} valuesOfSecondField
-   * @param {string} syncProperty свойство для синхронизации
+   * @param {function} callback
    */
-  return function (firstField, secondField, valuesOfFirstField, valuesOfSecondField, syncProperty) {
+  return function (firstField, secondField, valuesOfFirstField, valuesOfSecondField, callback) {
     /** @type {number} */
     var index = valuesOfFirstField.indexOf(firstField.value);
 
-    secondField[syncProperty] = valuesOfSecondField[index];
+    if (typeof callback === 'function') {
+      callback(secondField, valuesOfSecondField[index]);
+    }
   };
 })();
