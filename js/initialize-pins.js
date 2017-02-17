@@ -1,6 +1,6 @@
 'use strict';
 
-(function () {
+window.initializePins = (function () {
   /** @type {HTMLElement} */
   var pinMapElement = document.querySelector('.tokyo__pin-map');
 
@@ -22,9 +22,11 @@
   /** @const {number} */
   var ESCAPE_KEY_CODE = 27;
 
+  /** @type {?Function} callback */
+  var onHideCard = null;
+
   pinMapElement.addEventListener('click', pinClickHandler);
   pinMapElement.addEventListener('keydown', pinKeydownHandler);
-  dialogCloseBtnElement.addEventListener('click', dialogCloseBtnClickHandler);
 
   /** @param {MouseEvent} event */
   function pinClickHandler(event) {
@@ -34,7 +36,7 @@
   /** @param {KeyboardEvent} event */
   function pinKeydownHandler(event) {
     if (event.keyCode === ENTER_KEY_CODE) {
-      selectPin(event.target);
+      selectPin(event.target, focusPin);
     }
   }
 
@@ -53,8 +55,9 @@
   /**
    * Поведение при выборе пина — его активация и открытие диалога
    * @param {HTMLElement} element
+   * @param {?Function} callback
    */
-  function selectPin(element) {
+  function selectPin(element, callback) {
     if (element.classList.contains(PIN_CLASS)) {
       var pinActive = pinMapElement.querySelector('.' + PIN_CLASS_ACTIVE);
 
@@ -62,10 +65,11 @@
         pinActive.classList.remove(PIN_CLASS_ACTIVE);
         pinActive.setAttribute('aria-checked', 'false');
       }
+
       element.classList.add(PIN_CLASS_ACTIVE);
       element.setAttribute('aria-checked', 'false');
-      dialogElement.style.visibility = 'visible';
-      document.addEventListener('keydown', dialogCloseBtnKeydownHandler);
+
+      window.showCard(callback);
     }
   }
 
@@ -73,6 +77,25 @@
   function closeDialog() {
     dialogElement.style.visibility = 'hidden';
     document.removeEventListener('keydown', dialogCloseBtnKeydownHandler);
+    dialogCloseBtnElement.removeEventListener('click', dialogCloseBtnClickHandler);
+
+    if (typeof window.initializePins.onHideCard === 'function') {
+      window.initializePins.onHideCard();
+    }
+
     pinMapElement.querySelector('.' + PIN_CLASS_ACTIVE).classList.remove(PIN_CLASS_ACTIVE);
   }
+
+  /** Ставит фокус на пин */
+  var focusPin = function () {
+    pinMapElement.querySelector('.' + PIN_CLASS_ACTIVE).focus();
+  };
+
+  return {
+    onHideCard: onHideCard,
+    dialogElement: dialogElement,
+    dialogCloseBtnElement: dialogCloseBtnElement,
+    dialogCloseBtnKeydownHandler: dialogCloseBtnKeydownHandler,
+    dialogCloseBtnClickHandler: dialogCloseBtnClickHandler
+  };
 })();
