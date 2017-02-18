@@ -1,12 +1,15 @@
 'use strict';
 
 window.showCard = (function () {
+  /** @type {HTMLElement} */
+  var cardElement = document.querySelector('.dialog');
 
-  return function (callback) {
-    window.initializePins.dialogElement.style.visibility = 'visible';
-    document.addEventListener('keydown', window.initializePins.dialogCloseBtnKeydownHandler);
-    window.initializePins.dialogCloseBtnElement.addEventListener('click', window.initializePins.dialogCloseBtnClickHandler);
+  /** @param {Function=} optCallback */
+  return function (optCallback) {
+    cardElement.style.visibility = 'visible';
 
-    window.initializePins.onHideCard = callback;
+    if (typeof optCallback === 'function') {
+      window.onHideCard = optCallback;
+    }
   };
 })();

@@ -1,7 +1,7 @@
 'use strict';
 
 window.synchronizeFields = (function () {
-  /**
+   /**
    * @param {HTMLElement} firstField
    * @param {HTMLElement} secondField
    * @param {Array<string>} valuesOfFirstField
@@ -12,8 +12,6 @@ window.synchronizeFields = (function () {
     /** @type {number} */
     var index = valuesOfFirstField.indexOf(firstField.value);
 
-    if (typeof callback === 'function') {
-      callback(secondField, valuesOfSecondField[index]);
-    }
+    callback(secondField, valuesOfSecondField[index]);
   };
 })();
