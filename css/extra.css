@@ -5,3 +5,7 @@
 .dialog {
   visibility: hidden;
 }
+
+.dialog.visible {
+  visibility: visible;
+}
