@@ -2,16 +2,19 @@
 
 window.showCard = (function () {
   /** @type {HTMLElement} */
-  var cardElement = document.querySelector('.dialog');
-
-  /** @type {HTMLElement} */
-  var cardCloseBtnElement = cardElement.querySelector('.dialog__close');
+  var tokyoElement = document.querySelector('.tokyo');
 
   /** @const {number} */
   var ESCAPE_KEY_CODE = 27;
 
   /** @type {?Function} */
   var onHideCallback = null;
+
+  /** @type {HTMLElement} */
+  var cardCloseBtnElement;
+
+  /** @type {HTMLElement} */
+  var currentCard;
 
   /** @param {MouseEvent} event */
   function cardCloseBtnClickHandler(event) {
@@ -25,28 +28,46 @@ window.showCard = (function () {
     }
   }
 
-  /** @param {boolean} flag */
-  function toggleCardVisibility(flag) {
-    cardElement.classList.toggle('visible', flag);
+  /** добавление слушаетелей */
+  function addEventListeners() {
+    document.addEventListener('keydown', cardCloseBtnKeydownHandler);
+    cardCloseBtnElement.addEventListener('click', cardCloseBtnClickHandler);
+  }
+
+  /** удаление слушаетелей */
+  function removeEventListeners() {
+    document.removeEventListener('keydown', cardCloseBtnKeydownHandler);
+    cardCloseBtnElement.removeEventListener('click', cardCloseBtnClickHandler);
   }
 
   /** Поведение при закрытии диалога — скрытие модального окна и деактивация пина */
   function closeCard() {
-    toggleCardVisibility(false);
-    document.removeEventListener('keydown', cardCloseBtnKeydownHandler);
-    cardCloseBtnElement.removeEventListener('click', cardCloseBtnClickHandler);
-
+    currentCard.remove();
+    currentCard = null;
+    removeEventListeners();
     onHideCallback();
   }
 
-  /** @param {Function} deactivatePinCallback
-   *  @param {Function=} optCallback
+  /**
+   * @param {Object} data данные карточки
+   * @param {Function} deactivatePinCallback
+   * @param {Function=} optCallback
    */
-  return function (deactivatePinCallback, optCallback) {
-    toggleCardVisibility(true);
+  return function (data, deactivatePinCallback, optCallback) {
+    /** @type {HTMLElement} */
+    var newCard = window.renderCard(data);
 
-    document.addEventListener('keydown', cardCloseBtnKeydownHandler);
-    cardCloseBtnElement.addEventListener('click', cardCloseBtnClickHandler);
+    if (currentCard) {
+      removeEventListeners();
+      currentCard.parentElement.replaceChild(newCard, currentCard);
+    } else {
+      tokyoElement.appendChild(newCard);
+    }
+
+    currentCard = newCard;
+    cardCloseBtnElement = currentCard.querySelector('.dialog__close');
+
+    addEventListeners();
 
     onHideCallback = function () {
       if (typeof optCallback === 'function') {

@@ -13,28 +13,48 @@ window.initializePins = (function () {
   /** @const {number} */
   var ENTER_KEY_CODE = 13;
 
-  pinMapElement.addEventListener('click', pinClickHandler);
-  pinMapElement.addEventListener('keydown', pinKeydownHandler);
+  /** @const {string} */
+  var SIMILAR_APARTMENTS_URL = 'https://intensive-javascript-server-pedmyactpq.now.sh/keksobooking/data';
 
-  /** @param {MouseEvent} event */
-  function pinClickHandler(event) {
-    selectPin(event.target, deactivatePin);
-  }
+  /** @const {number} */
+  var APARTMENTS_TO_RENDER_QUANTITY = 3;
 
-  /** @param {KeyboardEvent} event */
-  function pinKeydownHandler(event) {
-    if (event.keyCode === ENTER_KEY_CODE) {
-      selectPin(event.target, deactivatePin, focusPin);
-    }
-  }
+  /** @type {Array} */
+  var similarApartments = [];
+
+  /** @type {HTMLElement} */
+  var fragment = document.createDocumentFragment();
+
+  window.load(SIMILAR_APARTMENTS_URL, function (data) {
+    similarApartments = data.slice(0, APARTMENTS_TO_RENDER_QUANTITY);
+
+    similarApartments.forEach(function (apartmentData) {
+      var newPin = window.renderPin(apartmentData);
+
+      newPin.addEventListener('click', function () {
+        selectPin(apartmentData, event.target, deactivatePin);
+      });
+
+      newPin.addEventListener('keydown', function () {
+        if (event.keyCode === ENTER_KEY_CODE) {
+          selectPin(apartmentData, event.target, deactivatePin, focusPin);
+        }
+      });
+
+      fragment.appendChild(newPin);
+    });
+
+    pinMapElement.appendChild(fragment);
+  });
 
   /**
    * Поведение при выборе пина — его активация и открытие диалога
+   * @param {Object} data
    * @param {HTMLElement} element
    * @param {Function=} deactivateCallback
    * @param {Function=} optCallback
    */
-  function selectPin(element, deactivateCallback, optCallback) {
+  function selectPin(data, element, deactivateCallback, optCallback) {
     if (element.classList.contains(PIN_CLASS)) {
       var pinActive = pinMapElement.querySelector('.' + PIN_CLASS_ACTIVE);
 
@@ -44,9 +64,9 @@ window.initializePins = (function () {
       }
 
       element.classList.add(PIN_CLASS_ACTIVE);
-      element.setAttribute('aria-checked', 'false');
+      element.setAttribute('aria-checked', 'true');
 
-      window.showCard(deactivateCallback, optCallback);
+      window.showCard(data, deactivateCallback, optCallback);
     }
   }
 
