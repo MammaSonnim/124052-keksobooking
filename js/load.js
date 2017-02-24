@@ -13,20 +13,14 @@ window.load = (function () {
   return function (url, onLoad) {
     xhr.open('GET', url);
     xhr.addEventListener('readystatechange', function (evt) {
-      switch (evt.target.readyState) {
-        case 0:
-        case 1:
-        case 2:
-        case 3:
-          break;
+      if (evt.target.readyState !== 4) {
+        return;
+      }
 
-        case 4:
-          try {
-            onLoad(evt.target.response);
-          } catch (err) {
-            throw new Error(ERROR_MSG);
-          }
-          break;
+      try {
+        onLoad(evt.target.response);
+      } catch (err) {
+        throw new Error(ERROR_MSG);
       }
     });
 

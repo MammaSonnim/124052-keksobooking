@@ -22,7 +22,7 @@ window.showCard = (function () {
   }
 
   /** @param {KeyboardEvent} event */
-  function cardCloseBtnKeydownHandler(event) {
+  function documentKeydownHandler(event) {
     if (event.keyCode === ESCAPE_KEY_CODE) {
       closeCard();
     }
@@ -30,13 +30,13 @@ window.showCard = (function () {
 
   /** добавление слушаетелей */
   function addEventListeners() {
-    document.addEventListener('keydown', cardCloseBtnKeydownHandler);
+    document.addEventListener('keydown', documentKeydownHandler);
     cardCloseBtnElement.addEventListener('click', cardCloseBtnClickHandler);
   }
 
   /** удаление слушаетелей */
   function removeEventListeners() {
-    document.removeEventListener('keydown', cardCloseBtnKeydownHandler);
+    document.removeEventListener('keydown', documentKeydownHandler);
     cardCloseBtnElement.removeEventListener('click', cardCloseBtnClickHandler);
   }
 
@@ -50,30 +50,26 @@ window.showCard = (function () {
 
   /**
    * @param {Object} data данные карточки
-   * @param {Function} deactivatePinCallback
-   * @param {Function=} optCallback
+   * @param {Function=} optOnHideCallback
    */
-  return function (data, deactivatePinCallback, optCallback) {
+  return function (data, optOnHideCallback) {
     /** @type {HTMLElement} */
     var newCard = window.renderCard(data);
 
     if (currentCard) {
       removeEventListeners();
-      currentCard.parentElement.replaceChild(newCard, currentCard);
-    } else {
-      tokyoElement.appendChild(newCard);
+      currentCard.remove();
     }
+
+    tokyoElement.appendChild(newCard);
 
     currentCard = newCard;
     cardCloseBtnElement = currentCard.querySelector('.dialog__close');
 
     addEventListeners();
 
-    onHideCallback = function () {
-      if (typeof optCallback === 'function') {
-        optCallback();
-      }
-      deactivatePinCallback();
+    onHideCallback = optOnHideCallback || function () {
+      throw new Error('no callback');
     };
   };
 })();

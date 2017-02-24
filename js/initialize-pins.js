@@ -66,7 +66,12 @@ window.initializePins = (function () {
       element.classList.add(PIN_CLASS_ACTIVE);
       element.setAttribute('aria-checked', 'true');
 
-      window.showCard(data, deactivateCallback, optCallback);
+      window.showCard(data, function () {
+        if (typeof optCallback === 'function') {
+          optCallback();
+        }
+        deactivateCallback();
+      });
     }
   }
 
