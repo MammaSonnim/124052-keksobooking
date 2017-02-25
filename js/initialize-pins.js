@@ -4,6 +4,9 @@ window.initializePins = (function () {
   /** @type {HTMLElement} */
   var pinMapElement = document.querySelector('.tokyo__pin-map');
 
+  /** @type {HTMLElement} */
+  var pinMainElement = document.querySelector('.pin__main');
+
   /** @const {string} */
   var PIN_CLASS = 'pin';
 
@@ -25,27 +28,47 @@ window.initializePins = (function () {
   /** @type {HTMLElement} */
   var fragment = document.createDocumentFragment();
 
-  window.load(SIMILAR_APARTMENTS_URL, function (data) {
-    similarApartments = data.slice(0, APARTMENTS_TO_RENDER_QUANTITY);
+  /** @type {HTMLElement} */
+  var filtersFormElement = document.querySelector('.tokyo__filters');
 
-    similarApartments.forEach(function (apartmentData) {
-      var newPin = window.renderPin(apartmentData);
+  window.load(SIMILAR_APARTMENTS_URL, function (data) {
+    similarApartments = data;
+
+    renderPins(similarApartments.slice(0, APARTMENTS_TO_RENDER_QUANTITY));
+
+    filtersFormElement.addEventListener('change', function () {
+      clearMap();
+      renderPins(window.filterOffers(similarApartments));
+    });
+  });
+
+  /** Очистка карты от пинов */
+  function clearMap() {
+    pinMapElement.innerHTML = pinMainElement.outerHTML;
+  }
+
+  /**
+   * Отрисовка всех пинов по приходящим данным
+   * @param {Object} data
+   */
+  function renderPins(data) {
+    data.forEach(function (pinData) {
+      var newPin = window.renderPin(pinData);
 
       newPin.addEventListener('click', function () {
-        selectPin(apartmentData, event.target, deactivatePin);
+        selectPin(pinData, event.target, deactivatePin);
       });
 
       newPin.addEventListener('keydown', function () {
         if (event.keyCode === ENTER_KEY_CODE) {
-          selectPin(apartmentData, event.target, deactivatePin, focusPin);
+          selectPin(pinData, event.target, deactivatePin, focusPin);
         }
       });
 
       fragment.appendChild(newPin);
+      pinMapElement.appendChild(fragment);
     });
-
-    pinMapElement.appendChild(fragment);
-  });
+  }
 
   /**
    * Поведение при выборе пина — его активация и открытие диалога
