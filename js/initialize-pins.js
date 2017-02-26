@@ -38,7 +38,7 @@ window.initializePins = (function () {
 
     filtersFormElement.addEventListener('change', function () {
       clearMap();
-      renderPins(window.filterOffers(similarApartments));
+      renderPins(window.filterPins(similarApartments));
     });
   });
 

@@ -1,6 +1,6 @@
 'use strict';
 
-window.filterOffers = (function () {
+window.filterPins = (function () {
   /** @type {HTMLElement} */
   var filtersForm = document.querySelector('.tokyo__filters');
 
@@ -21,20 +21,18 @@ window.filterOffers = (function () {
 
   /**
    * @param {string} type
+   * @param {string} typeFilterValue
    * @return {boolean}
    */
-  function compareApartmentType(type) {
-    /** @type {string} */
-    var value = filterTypeElement.value;
-
-    return value === type || value === 'any';
+  function compareApartmentType(type, typeFilterValue) {
+    return typeFilterValue === type || typeFilterValue === 'any';
   }
 
   /**
    * @readonly
    * @enum {string}
    */
-  var priceString = {
+  var priceFilterRange = {
     LOW: 'low',
     MIDDLE: 'middle',
     HIGH: 'high'
@@ -44,67 +42,59 @@ window.filterOffers = (function () {
    * @readonly
    * @enum {number}
    */
-  var priceNumber = {
+  var priceFilterBounds = {
     MIN: 10000,
     MAX: 50000
   };
 
   /**
-   * @param {string} price
+   * @param {number} price
+   * @param {string} priceFilterValue
    * @return {boolean}
    */
-  function compareApartmentPrice(price) {
-    /** @type {string} */
-    var value = filterPriceElement.value;
-
-    switch (value) {
-      case (priceString.LOW):
-        return price < priceNumber.MIN;
-      case (priceString.MIDDLE):
-        return price >= priceNumber.MIN && price <= priceNumber.MAX;
-      case (priceString.HIGH):
-        return price > priceNumber.MAX;
+  function compareApartmentPrice(price, priceFilterValue) {
+    switch (priceFilterValue) {
+      case (priceFilterRange.LOW):
+        return +price < priceFilterBounds.MIN;
+      case (priceFilterRange.MIDDLE):
+        return +price >= priceFilterBounds.MIN && +price <= priceFilterBounds.MAX;
+      case (priceFilterRange.HIGH):
+        return +price > priceFilterBounds.MAX;
     }
 
     return false;
   }
 
   /**
-   * @param {string} rooms
+   * @param {number} rooms
+   * @param {string} roomsFilterValue
    * @return {boolean}
    */
-  function compareRoomNumber(rooms) {
-    /** @type {string} */
-    var value = filterRoomNumberElement.value;
-
-    return value === rooms.toString() || value === 'any';
+  function compareRoomNumber(rooms, roomsFilterValue) {
+    return +roomsFilterValue === rooms || roomsFilterValue === 'any';
   }
 
   /**
-   * @param {string} guests
+   * @param {number} guests
+   * @param {string} guestsFilterValue
    * @return {boolean}
    */
-  function compareGuestsNumber(guests) {
-    /** @type {string} */
-    var value = filterGuestsNumberElement.value;
-
-    return value === guests.toString() || value === 'any';
+  function compareGuestsNumber(guests, guestsFilterValue) {
+    return +guestsFilterValue === guests || guestsFilterValue === 'any';
   }
 
   /**
-   * @param {string} features
+   * @param {Array} features
+   * @param {NodeList} featuresFilter
    * @return {boolean} flag
    */
-  function compareFeatures(features) {
+  function compareFeatures(features, featuresFilter) {
     /** @type {boolean} */
     var flag = true;
 
-    [].forEach.call(filterFeatureElements, function (featureInFilter) {
-      if (featureInFilter.checked) {
-        if (!(features.includes(featureInFilter.value))) {
-          flag = false;
-          return flag;
-        }
+    [].forEach.call(featuresFilter, function (featureFilter) {
+      if (featureFilter.checked && !(features.includes(featureFilter.value))) {
+        flag = false;
       }
     });
 
@@ -117,11 +107,11 @@ window.filterOffers = (function () {
    */
   return function (apartments) {
     return apartments.filter(function (apartment) {
-      return compareApartmentType(apartment.offer.type) &&
-        compareApartmentPrice(apartment.offer.price) &&
-        compareRoomNumber(apartment.offer.rooms) &&
-        compareGuestsNumber(apartment.offer.guests) &&
-        compareFeatures(apartment.offer.features);
+      return compareApartmentType(apartment.offer.type, filterTypeElement.value) &&
+        compareApartmentPrice(apartment.offer.price, filterPriceElement.value) &&
+        compareRoomNumber(apartment.offer.rooms, filterRoomNumberElement.value) &&
+        compareGuestsNumber(apartment.offer.guests, filterGuestsNumberElement.value) &&
+        compareFeatures(apartment.offer.features, filterFeatureElements);
     });
   };
 })();
