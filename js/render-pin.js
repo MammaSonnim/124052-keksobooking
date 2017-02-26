@@ -7,11 +7,17 @@ window.renderPin = (function () {
   /** @type {HTMLElement} */
   var pinToClone = templateElement.content.querySelector('.pin');
 
-  /** @type {HTMLElement} */
+  /** @type {Node} */
   var newPin;
 
   /** @type {HTMLElement} */
   var pinImg;
+
+  /** @const {number} */
+  var PIN_WIDTH = 56;
+
+  /** @const {number} */
+  var PIN_HEIGHT = 75;
 
   /**
    * @param {Object} data данные пина
@@ -21,8 +27,8 @@ window.renderPin = (function () {
     newPin = pinToClone.cloneNode(true);
     pinImg = newPin.querySelector('img');
 
-    newPin.style.left = data.location.x + 'px';
-    newPin.style.top = data.location.y + 'px';
+    newPin.style.left = data.location.x - PIN_WIDTH / 2 + 'px';
+    newPin.style.top = data.location.y - PIN_HEIGHT + 'px';
     newPin.tabIndex = 0;
     newPin.setAttribute('aria-checked', 'false');
     pinImg.src = data.author.avatar;
