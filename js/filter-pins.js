@@ -74,7 +74,7 @@ window.filterPins = (function () {
    * @return {boolean}
    */
   function filterByRoomNumber(rooms, roomsFilterValue) {
-    return +roomsFilterValue === rooms || roomsFilterValue === 'any';
+    return +roomsFilterValue === rooms || roomsFilterValue.toString() === 'any';
   }
 
   /**
@@ -83,25 +83,18 @@ window.filterPins = (function () {
    * @return {boolean}
    */
   function filterByGuestsNumber(guests, guestsFilterValue) {
-    return +guestsFilterValue === guests || guestsFilterValue === 'any';
+    return +guestsFilterValue === guests || guestsFilterValue.toString() === 'any';
   }
 
   /**
    * @param {Array} features
    * @param {NodeList} featuresFilter
-   * @return {boolean} flag
+   * @return {boolean}
    */
   function filterByFeatures(features, featuresFilter) {
-    /** @type {boolean} */
-    var flag = true;
-
-    [].some.call(featuresFilter, function (featureFilter) {
-      if (featureFilter.checked && !(features.includes(featureFilter.value))) {
-        flag = false;
-      }
+    return ![].some.call(featuresFilter, function (featureFilter) {
+      return featureFilter.checked && !features.includes(featureFilter.value);
     });
-
-    return flag;
   }
 
   /**
