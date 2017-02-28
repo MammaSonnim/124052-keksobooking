@@ -19,14 +19,8 @@ window.filterPins = (function () {
   /** @type {NodeList} */
   var filterFeatureElements = filtersForm.querySelectorAll('input[type="checkbox"]');
 
-  /**
-   * @param {string} type
-   * @param {string} typeFilterValue
-   * @return {boolean}
-   */
-  function compareApartmentType(type, typeFilterValue) {
-    return typeFilterValue === type || typeFilterValue === 'any';
-  }
+  /** @const {string} */
+  var ANY_VALUE = 'any';
 
   /**
    * @readonly
@@ -35,7 +29,8 @@ window.filterPins = (function () {
   var priceFilterRange = {
     LOW: 'low',
     MIDDLE: 'middle',
-    HIGH: 'high'
+    HIGH: 'high',
+    ANY: ANY_VALUE
   };
 
   /**
@@ -48,18 +43,29 @@ window.filterPins = (function () {
   };
 
   /**
+   * @param {string} type
+   * @param {string} typeFilterValue
+   * @return {boolean}
+   */
+  function filterByApartmentType(type, typeFilterValue) {
+    return typeFilterValue === type || typeFilterValue === ANY_VALUE;
+  }
+
+  /**
    * @param {number} price
    * @param {string} priceFilterValue
    * @return {boolean}
    */
-  function compareApartmentPrice(price, priceFilterValue) {
+  function filterByApartmentPrice(price, priceFilterValue) {
     switch (priceFilterValue) {
       case (priceFilterRange.LOW):
-        return +price < priceFilterBounds.MIN;
+        return price < priceFilterBounds.MIN;
       case (priceFilterRange.MIDDLE):
-        return +price >= priceFilterBounds.MIN && +price <= priceFilterBounds.MAX;
+        return price >= priceFilterBounds.MIN && price <= priceFilterBounds.MAX;
       case (priceFilterRange.HIGH):
-        return +price > priceFilterBounds.MAX;
+        return price > priceFilterBounds.MAX;
+      case (priceFilterRange.ANY):
+        return true;
     }
 
     return false;
@@ -67,38 +73,43 @@ window.filterPins = (function () {
 
   /**
    * @param {number} rooms
-   * @param {string} roomsFilterValue
+   * @param {number|string} roomsFilterValue
    * @return {boolean}
    */
-  function compareRoomNumber(rooms, roomsFilterValue) {
-    return +roomsFilterValue === rooms || roomsFilterValue === 'any';
+  function filterByRoomNumber(rooms, roomsFilterValue) {
+    return parseInt(roomsFilterValue, 10) === rooms || roomsFilterValue.toString() === ANY_VALUE;
   }
 
   /**
    * @param {number} guests
-   * @param {string} guestsFilterValue
+   * @param {number|string} guestsFilterValue
    * @return {boolean}
    */
-  function compareGuestsNumber(guests, guestsFilterValue) {
-    return +guestsFilterValue === guests || guestsFilterValue === 'any';
+  function filterByGuestsNumber(guests, guestsFilterValue) {
+    return parseInt(guestsFilterValue, 10) === guests || guestsFilterValue.toString() === ANY_VALUE;
   }
 
   /**
    * @param {Array} features
    * @param {NodeList} featuresFilter
-   * @return {boolean} flag
+   * @return {boolean}
    */
-  function compareFeatures(features, featuresFilter) {
-    /** @type {boolean} */
-    var flag = true;
-
-    [].forEach.call(featuresFilter, function (featureFilter) {
-      if (featureFilter.checked && !(features.includes(featureFilter.value))) {
-        flag = false;
-      }
+  function filterByFeatures(features, featuresFilter) {
+    return ![].some.call(featuresFilter, function (featureFilter) {
+      return featureFilter.checked && !features.includes(featureFilter.value);
     });
+  }
 
-    return flag;
+  /**
+   * @param {Object} apartment объект с данными
+   * @return {boolean} оставить или нет объект после применения всех фильтров
+   */
+  function filterByAllParams(apartment) {
+    return filterByApartmentType(apartment.offer.type, filterTypeElement.value) &&
+      filterByApartmentPrice(parseInt(apartment.offer.price, 10), filterPriceElement.value) &&
+      filterByRoomNumber(parseInt(apartment.offer.rooms, 10), filterRoomNumberElement.value) &&
+      filterByGuestsNumber(parseInt(apartment.offer.guests, 10), filterGuestsNumberElement.value) &&
+      filterByFeatures(apartment.offer.features, filterFeatureElements);
   }
 
   /**
@@ -106,12 +117,6 @@ window.filterPins = (function () {
    * @return {Array} отфильтрованный массив
    */
   return function (apartments) {
-    return apartments.filter(function (apartment) {
-      return compareApartmentType(apartment.offer.type, filterTypeElement.value) &&
-        compareApartmentPrice(apartment.offer.price, filterPriceElement.value) &&
-        compareRoomNumber(apartment.offer.rooms, filterRoomNumberElement.value) &&
-        compareGuestsNumber(apartment.offer.guests, filterGuestsNumberElement.value) &&
-        compareFeatures(apartment.offer.features, filterFeatureElements);
-    });
+    return apartments.filter(filterByAllParams);
   };
 })();

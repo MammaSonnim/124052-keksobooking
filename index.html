@@ -14,6 +14,9 @@
 <main>
   <section class="tokyo">
     <img src="img/main.png" alt="Tokyo" width="1200" height="700">
+    <div class="tokyo__pin-map" role="radiogroup">
+      <div class="pin  pin__main" role="radio" aria-checked="false" tabindex="0"><img src="img/main-pin-image.png" alt="Main Pin" class="rounded" width="40" height="44"></div>
+    </div>
     <div class="tokyo__filters-container">
       <form action="#" class="tokyo__filters">
         <label><select name="housing_type" id="housing_type" class="tokyo__filter">
@@ -23,7 +26,8 @@
           <option value="bungalo">Сарай</option>
         </select></label>
         <label><select name="housing_price" id="housing_price" class="tokyo__filter">
-          <option value="middle" selected>10000 - 50000&#x20bd;</option>
+          <option value="any" selected>Любая цена</option>
+          <option value="middle">10000 - 50000&#x20bd;</option>
           <option value="low">до 10000&#x20bd;</option>
           <option value="high">от 50000&#x20bd;</option>
         </select></label>
@@ -65,9 +69,6 @@
           </label>
         </fieldset>
       </form>
-    </div>
-    <div class="tokyo__pin-map" role="radiogroup">
-      <div class="pin  pin__main" role="radio" aria-checked="false" tabindex="0"><img src="img/main-pin-image.png" alt="Main Pin" class="rounded" width="40" height="44"></div>
     </div>
   </section>
   <div class="notice">
@@ -213,7 +214,7 @@
 <footer class="footer container">
   <div class="center-wrapper">
     <section class="footer-logo">
-      Сделано в <a tabindex="1" href="https://htmlacademy.ru" class="footer-logo-link"><img src="img/ha-logo.png" class="footer-logo-image" width="130" alt="HTML Academy"/>HTML Academy</a> &copy; 2017
+      Сделано в <a href="https://htmlacademy.ru" class="footer-logo-link" tabindex="-1" ><img src="img/ha-logo.png" class="footer-logo-image" width="130" alt="HTML Academy"/>HTML Academy</a> &copy; 2017
     </section>
     <nav class="footer-social">
       <a href="https://twitter.com/htmlacademy_ru" class="footer-social-item footer-social-item-twitter" target="_blank" rel="nofollow">Twitter</a>
@@ -224,17 +225,16 @@
   </div>
 </footer>
 <template id="pin-template">
-  <div class="pin">
+  <div class="pin" tabindex="0">
     <img src="" alt="" class="rounded" width="40" height="40">
   </div>
 </template>
-
 <template id="dialog-template">
   <div class="dialog" role="dialog" aria-labelledby="dialogTitle">
     <div class="dialog__title">
       <img src="img/avatars/avatar.png" alt="Avatar" width="70" height="70">
-      <a href="#" class="dialog__close" tabindex="1">
-        <img src="img/close.svg" alt="close" width="22" height="22" role="button" aria-label="close dialog">
+      <a href="#" class="dialog__close">
+        <img src="img/close.svg" alt="close" width="22" height="22" role="button" aria-label="close dialog" tabindex="0">
       </a>
     </div>
     <div class="dialog__panel">

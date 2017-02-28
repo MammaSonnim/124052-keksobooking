@@ -44,6 +44,7 @@ window.initializePins = (function () {
 
   /** Очистка карты от пинов */
   function clearMap() {
+    window.showCard.close();
     pinMapElement.innerHTML = pinMainElement.outerHTML;
   }
 
@@ -55,11 +56,11 @@ window.initializePins = (function () {
     data.forEach(function (pinData) {
       var newPin = window.renderPin(pinData);
 
-      newPin.addEventListener('click', function () {
+      newPin.addEventListener('click', function (event) {
         selectPin(pinData, event.target, deactivatePin);
       });
 
-      newPin.addEventListener('keydown', function () {
+      newPin.addEventListener('keydown', function (event) {
         if (event.keyCode === ENTER_KEY_CODE) {
           selectPin(pinData, event.target, deactivatePin, focusPin);
         }
@@ -89,7 +90,7 @@ window.initializePins = (function () {
       element.classList.add(PIN_CLASS_ACTIVE);
       element.setAttribute('aria-checked', 'true');
 
-      window.showCard(data, function () {
+      window.showCard.open(data, function () {
         if (typeof optCallback === 'function') {
           optCallback();
         }

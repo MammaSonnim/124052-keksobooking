@@ -29,7 +29,6 @@ window.renderPin = (function () {
 
     newPin.style.left = data.location.x - PIN_WIDTH / 2 + 'px';
     newPin.style.top = data.location.y - PIN_HEIGHT + 'px';
-    newPin.tabIndex = 0;
     newPin.setAttribute('aria-checked', 'false');
     pinImg.src = data.author.avatar;
 
