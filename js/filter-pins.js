@@ -19,14 +19,8 @@ window.filterPins = (function () {
   /** @type {NodeList} */
   var filterFeatureElements = filtersForm.querySelectorAll('input[type="checkbox"]');
 
-  /**
-   * @param {string} type
-   * @param {string} typeFilterValue
-   * @return {boolean}
-   */
-  function filterByApartmentType(type, typeFilterValue) {
-    return typeFilterValue === type || typeFilterValue === 'any';
-  }
+  /** @const {string} */
+  var ANY_VALUE = 'any';
 
   /**
    * @readonly
@@ -36,7 +30,7 @@ window.filterPins = (function () {
     LOW: 'low',
     MIDDLE: 'middle',
     HIGH: 'high',
-    ANY: 'any'
+    ANY: ANY_VALUE
   };
 
   /**
@@ -47,6 +41,15 @@ window.filterPins = (function () {
     MIN: 10000,
     MAX: 50000
   };
+
+  /**
+   * @param {string} type
+   * @param {string} typeFilterValue
+   * @return {boolean}
+   */
+  function filterByApartmentType(type, typeFilterValue) {
+    return typeFilterValue === type || typeFilterValue === ANY_VALUE;
+  }
 
   /**
    * @param {number} price
@@ -74,7 +77,7 @@ window.filterPins = (function () {
    * @return {boolean}
    */
   function filterByRoomNumber(rooms, roomsFilterValue) {
-    return +roomsFilterValue === rooms || roomsFilterValue.toString() === 'any';
+    return parseInt(roomsFilterValue, 10) === rooms || roomsFilterValue.toString() === ANY_VALUE;
   }
 
   /**
@@ -83,7 +86,7 @@ window.filterPins = (function () {
    * @return {boolean}
    */
   function filterByGuestsNumber(guests, guestsFilterValue) {
-    return +guestsFilterValue === guests || guestsFilterValue.toString() === 'any';
+    return parseInt(guestsFilterValue, 10) === guests || guestsFilterValue.toString() === ANY_VALUE;
   }
 
   /**
@@ -103,9 +106,9 @@ window.filterPins = (function () {
    */
   function filterByAllParams(apartment) {
     return filterByApartmentType(apartment.offer.type, filterTypeElement.value) &&
-      filterByApartmentPrice(+apartment.offer.price, filterPriceElement.value) &&
-      filterByRoomNumber(+apartment.offer.rooms, filterRoomNumberElement.value) &&
-      filterByGuestsNumber(+apartment.offer.guests, filterGuestsNumberElement.value) &&
+      filterByApartmentPrice(parseInt(apartment.offer.price, 10), filterPriceElement.value) &&
+      filterByRoomNumber(parseInt(apartment.offer.rooms, 10), filterRoomNumberElement.value) &&
+      filterByGuestsNumber(parseInt(apartment.offer.guests, 10), filterGuestsNumberElement.value) &&
       filterByFeatures(apartment.offer.features, filterFeatureElements);
   }
 
