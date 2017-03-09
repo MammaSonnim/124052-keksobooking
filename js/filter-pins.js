@@ -105,11 +105,13 @@ window.filterPins = (function () {
    * @return {boolean} оставить или нет объект после применения всех фильтров
    */
   function filterByAllParams(apartment) {
-    return filterByApartmentType(apartment.offer.type, filterTypeElement.value) &&
+    return (
+      filterByApartmentType(apartment.offer.type, filterTypeElement.value) &&
       filterByApartmentPrice(parseInt(apartment.offer.price, 10), filterPriceElement.value) &&
       filterByRoomNumber(parseInt(apartment.offer.rooms, 10), filterRoomNumberElement.value) &&
       filterByGuestsNumber(parseInt(apartment.offer.guests, 10), filterGuestsNumberElement.value) &&
-      filterByFeatures(apartment.offer.features, filterFeatureElements);
+      filterByFeatures(apartment.offer.features, filterFeatureElements)
+    );
   }
 
   /**
