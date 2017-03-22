@@ -45,17 +45,19 @@ window.showCard = (function () {
 
   /** @param {MouseEvent} event */
   var cardImgMousedownHandler = function (event) {
-    onMouseDown(event);
+    event.preventDefault();
+    addMouseEventListeners(event);
   };
 
   /** @param {MouseEvent} event */
   var documentMousemoveHandler = function (event) {
-    onMouseMove(event, currentCard);
+    event.preventDefault();
+    setPosition(event, currentCard);
   };
 
   /** @param {MouseEvent} event */
   var documentMouseupHandler = function (event) {
-    onMouseUp();
+    removeMouseEventListeners();
   };
 
   /** добавление слушаетелей */
@@ -86,11 +88,9 @@ window.showCard = (function () {
    * Навешиваются обработчики на движение и отпускание клавиши мыши
    * @param {MouseEvent} event
    */
-  function onMouseDown(event) {
-    event.preventDefault();
-
+  function addMouseEventListeners(event) {
     if (isDragging) {
-      onMouseUp();
+      removeMouseEventListeners();
     }
 
     isDragging = true;
@@ -109,9 +109,7 @@ window.showCard = (function () {
    * @param {MouseEvent} event
    * @param {HTMLElement} target
    */
-  function onMouseMove(event, target) {
-    event.preventDefault();
-
+  function setPosition(event, target) {
     var shift = {
       x: startPoint.x - event.clientX,
       y: startPoint.y - event.clientY
@@ -127,7 +125,7 @@ window.showCard = (function () {
   }
 
   /** Снимаются обработчики на движение и отпускание клавиши мыши */
-  function onMouseUp() {
+  function removeMouseEventListeners() {
     document.removeEventListener('mousemove', documentMousemoveHandler);
     document.removeEventListener('mouseup', documentMouseupHandler);
 
